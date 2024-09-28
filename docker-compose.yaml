@@ -1,0 +1,13 @@
+version: '3.9'
+
+services:
+  openaichatbot:
+    container_name: openaichatbot
+    build:
+      dockerfile: Dockerfile
+    image: minhquan1906/openaichatbot:0.0.2
+    ports:
+      - "8501:8501"
+    volumes:
+      - ./data:/app/data
+  
