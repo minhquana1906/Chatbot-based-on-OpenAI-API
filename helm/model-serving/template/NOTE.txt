@@ -1,0 +1,1 @@
+The server can be accessed via port  on the following DNS name from within your cluster
