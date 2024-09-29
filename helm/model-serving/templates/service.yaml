@@ -9,7 +9,7 @@ spec:
   selector:
     app: {{ .Release.Name }}
   ports:
-    - port: 8501
+    - port: {{ .Values.service.port }}
       protocol: TCP
-      targetPort: 8501
-  type: LoadBalancer
+      targetPort: {{ .Values.service.targetPort }}
+  type: {{ .Values.service.type }}

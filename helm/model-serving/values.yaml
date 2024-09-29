@@ -2,3 +2,10 @@ image:
   repository: minhquan1906/openaichatbot
   tag: "lastest"
   pullPolicy: Always
+
+replicaCount: 3
+
+service:
+  type: LoadBalancer
+  port: 8501
+  targetPort: 8501
