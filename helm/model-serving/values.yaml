@@ -1,0 +1,4 @@
+image:
+  repository: minhquan1906/openaichatbot
+  tag: "0.0.1"
+  pullPolicy: Always
