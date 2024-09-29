@@ -18,6 +18,7 @@
           boot: true
           initialize_params:
             source_image: projects/ubuntu-os-cloud/global/images/ubuntu-2204-jammy-v20230727
+            disk_size_gb: 30
       # We use the default network with an external IP for SSH
       network_interfaces:
         - network:
