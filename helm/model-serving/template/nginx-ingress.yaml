@@ -10,7 +10,7 @@ metadata:
 
 spec:
   rules:
-  - host: custom.chatbot.com
+  - host: chatbot.custom.com
     http:
       paths:
       - path: /
