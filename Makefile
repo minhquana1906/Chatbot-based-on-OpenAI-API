@@ -1,5 +1,5 @@
 IMAGE_NAME = minhquan1906/openaichatbot
-IMAGE_TAG = 0.0.1
+IMAGE_TAG = latest
 
 .PHONY: all build push up down logs
 

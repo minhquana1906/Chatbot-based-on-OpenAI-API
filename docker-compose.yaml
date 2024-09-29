@@ -5,7 +5,7 @@ services:
     container_name: openaichatbot
     build:
       dockerfile: Dockerfile
-    image: minhquan1906/openaichatbot:0.0.2
+    image: minhquan1906/openaichatbot
     ports:
       - "8501:8501"
     volumes:
