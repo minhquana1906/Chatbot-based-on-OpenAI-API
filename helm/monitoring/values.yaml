@@ -1,175 +1,36 @@
 loki-stack:
   fluent-bit:
     enabled: true
-  
-  grafana:
-    enabled: true
-    sidecar:
-      datasources:
-        label: ""
-        labelValue: ""
-        enabled: true
-        maxLines: 1000
-    image:
-      tag: 10.3.3
-
-  prometheus:
-    enabled: true
-    isDefault: false
-    url: http://{{ include "prometheus.fullname" .}}:{{ .Values.prometheus.server.service.servicePort }}{{ .Values.prometheus.server.prefixURL }}
-    datasource:
-      jsonData: "{}"
-    global:
-      scrape_interval: 15s
-      evaluation_interval: 15s
-    
-    serverFiles:
-      alerting:
-      alertmanagers:
-      - static_configs:
-        - targets:
-          - "alertmanager:9093"
-
-      scrape_configs:
-        - job_name: prometheus
-          static_configs:
-          - targets:
-            - localhost:9090
-        
-
-      ## Alerts configuration
-      ## Ref: https://prometheus.io/docs/prometheus/latest/configuration/alerting_rules/
-      alerting_rules.yml: {}
-      groups:
-      - name: System alerts
-        rules:
-        - alert: NodeOutOfMemory
-          expr: node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes * 100 < 5
-          for: 1m
-          labels:
-            severity: warning
-          annotations:
-            summary: Node out of memory
-            description: Node memory has reached {{ humanize $value}}%
-        
-        - name: Containers
-          rules:
-          - alert: ServerHighMemory
-            expr: sum(rate(container_cpu_usage_seconds_total{name="demo-metrics"}[5m]))*100 > 100
-            for: 30s # Send out noti if the condition is true for more than 30 seconds
-            labels:
-              severity: warning
-            annotations:
-              summary: Server high cpu usage
-              description: Server's cpu consumption is at {{ humanize $value}}%
-      alerts: {}
-            
-      prometheus.yml:
-        rule_files:
-          - /etc/config/recording_rules.yml
-          - /etc/config/alerting_rules.yml
-        ## Below two files are DEPRECATED will be removed from this default values file
-          - /etc/config/rules
-          - /etc/config/alerts
-
-        scrape_configs:
-          - job_name: prometheus
-            static_configs:
-              - targets:
-                - localhost:9090
-
-      
-    
-
-    
-
-
-    
-
-
-    
-      
-    alertmanager:
-      enabled: true
-      url: http://{{ include "alertmanager.fullname" .}}:{{ .Values.alertmanager.service.port }}
-      namespace: {{ .Release.Namespace }}
-      config:
-        global:
-          resolve_timeout: 5m
-        route:
-          group_by: ['alertname', 'namespace', 'pod']
-          group_wait: 30s
-          group_interval: 5m
-          repeat_interval: 12h
-          receiver: 'discord'
-        receivers:
-        - name: 'discord'
-          discord_configs:
-          - channel: '#loki-alerts'
-            send_resolved: true
-            title: '{{ template "loki-stack.fullname" . }}'
-            text: "{{ .CommonAnnotations.summary }}"
-            api_url: 'https://hooks.slack.com/services/T00000000/B00000000/XXXXXXXXXXXXXXXXXXXXXXXX'
-            username: 'alertmanager'
-            icon_url: 'https://prometheus.io/images/alertmanager/alertmanager.png'
-            icon_emoji: ':alert:'
-            actions:
-            - type: button
-              text: 'View'
-              url: '{{ .ExternalURL }}'
-            - type: button
-              text: 'Runbook'
-              url: 
-    prometheus-node-exporter:
-      enabled: true
-      serviceMonitor:
-        enabled: true
-      image:
-        tag: v1.0.1
-      resources:
-        requests:
-          memory: "200Mi"
-          cpu: "100m"
-        limits:
-          memory: "200Mi"
-          cpu: "100m"
-      service:
-        annotations: {}
-        labels: {}
-        type: ClusterIP
-        port: 9100
-        targetPort: 9100
-        healthCheckPath: /metrics
-        
-
-
 
   loki:
     enabled: true
     isDefault: false
-    url: http://monitor-loki.monitoring.svc.cluster.local:3100
-    datasource:
-      uid: ""
-      jsonData: "{}"
-    
-# This is a complete configuration to deploy Loki backed by a GCS.
-# Index files will be written locally at /loki/index and, eventually, will be shipped to the storage via tsdb-shipper.
+    url: http://loki.monitoring.svc.cluster.local:3100
 
-      auth_enabled: false
+    test:
+      enabled: false
 
-      server:
-        http_listen_port: 3100
+    monitoring:
+      selfMonitoring:
+        enabled: false
+        grafanaAgent:
+          installOperator: false
 
-      common:
-        ring:
-          instance_addr: 0.0.0.0
-          kvstore:
-            store: inmemory
-        replication_factor: 1
-        path_prefix: /loki
+    auth_enabled: false
 
-      schema_config:
-        configs:
+    server:
+      http_listen_port: 3100
+
+    common:
+      ring:
+        instance_addr: 0.0.0.0
+        kvstore:
+          store: inmemory
+      replication_factor: 1
+      path_prefix: /loki
+
+    schema_config:
+      configs:
         - from: 2020-05-15
           store: tsdb
           object_store: gcs
@@ -178,53 +39,26 @@ loki-stack:
             prefix: index_
             period: 24h
 
-      storage_config:
-        tsdb_shipper:
-          active_index_directory: /loki/index
-          cache_location: /loki/index_cache
-        gcs:
-          bucket_name: logs-by-loki
-
-
-opentelemetry-collector:
-  enabled: true
-  image:
-    tag: 0.7.0
-  collector:
-    enabled: true
-    serviceMonitor:
-      enabled: true
-    config:
-      receivers:
-        otlp:
-          protocols:
-            grpc:
-      exporters:
-        logging:
-          loglevel: debug
-        otlp:
-          endpoint: "otel-collector.monitoring.svc.cluster.local:4317"
-      service:
-        pipelines:
-          logs:
-            receivers: [otlp]
-            exporters: [logging]
-          traces:
-            receivers: [otlp]
-            exporters: [logging]
+    storage_config:
+      tsdb_shipper:
+        active_index_directory: /loki/index
+        cache_location: /loki/index_cache
+      gcs:
+        bucket_name: logs-by-loki
 
 tempo:
-  enabled: true
-  image:
-    tag: 0.16.0
-  service:
-    httpPort: 3100
-    grpcPort: 4317
-  config:
-    auth_enabled: false
-    server:
-      http_listen_port: 3100
-    common:
-      ring:
-        instance_addr: 0.0.0.0
+  metricsGenerator:
+    enabled: true
+    remoteWriteUrl: "http://prometheus.monitoring.svc.cluster.local:9090"
+    
+    storage:
+      trace_id_batch_size: 100
+      trace_id_expiration: 168h
+      max_traces: 100000
+      backend: gcs
+      gcs:
+        bucket_name: traces-by-tempo
+        prefix: /tempo
+        chunk_buffer_size: 10000000
+        insecure: false
 

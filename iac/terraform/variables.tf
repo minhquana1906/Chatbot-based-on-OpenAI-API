@@ -23,7 +23,7 @@ variable "bucket-tempo" {
   default     = "traces-by-tempo"
 }
 
-variable "bucket-prometheus" {
-  description = "Bucket for prometheus to store metrics"
-  default     = "metrics-by-prometheus"
-}
+# variable "bucket-prometheus" {
+#   description = "Bucket for prometheus to store metrics"
+#   default     = "metrics-by-prometheus"
+# }

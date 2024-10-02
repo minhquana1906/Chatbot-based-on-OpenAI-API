@@ -46,3 +46,4 @@
       auth_kind: serviceaccount
       service_account_file: ../secrets/chatbot-openai-1906-43a7fb0b56ea.json
       state: present
+      
