@@ -95,8 +95,14 @@ class ChatApp:
                 st.session_state.messages = joblib.load(
                     f"data/{st.session_state.chat_id}-st_messages"
                 )
-            except:
+            except FileNotFoundError:
                 st.session_state.messages = []
+                self.new_chat()
+            except Exception as e:
+                st.session_state.messages = []
+                st.error(f"An error occurred: {e}")
+        else:
+            self.new_chat()
 
     def display_sidebar(self):
         with st.sidebar:

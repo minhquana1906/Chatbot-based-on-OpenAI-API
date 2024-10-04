@@ -47,3 +47,39 @@
       service_account_file: ../secrets/chatbot-openai-1906-43a7fb0b56ea.json
       state: present
       
+  - name: Create inbound firewall rule for port 8501
+    gcp_compute_firewall:
+      name: allow-port-8501
+      network:
+        selfLink: global/networks/default
+      allowed:
+        - ip_protocol: TCP
+          ports:
+            - 8501
+      source_ranges:
+        - 0.0.0.0/0  # Allow traffic from any source (use a more specific source range for security)
+      direction: INGRESS # Direction from outside to inside, EGRESS is the opposite direction
+      description: Allow incoming traffic on port 8501
+      project: chatbot-openai-1906
+      auth_kind: serviceaccount
+      service_account_file: ../secrets/chatbot-openai-1906-43a7fb0b56ea.json
+      state: present
+      
+  - name: Create inbound firewall rule for port 3000
+    gcp_compute_firewall:
+      name: allow-port-3000
+      network:
+        selfLink: global/networks/default
+      allowed:
+        - ip_protocol: TCP
+          ports:
+            - 3000
+      source_ranges:
+        - 0.0.0.0/0  # Allow traffic from any source (use a more specific source range for security)
+      direction: INGRESS # Direction from outside to inside, EGRESS is the opposite direction
+      description: Allow incoming traffic on port 30000
+      project: chatbot-openai-1906
+      auth_kind: serviceaccount
+      service_account_file: ../secrets/chatbot-openai-1906-43a7fb0b56ea.json
+      state: present
+              

@@ -1,0 +1,16 @@
+tempo:
+  metricsGenerator:
+    enabled: true
+    remoteWriteUrl: "http://prometheus.monitoring.svc:8080"
+    
+    storage:
+      trace_id_batch_size: 100
+      trace_id_expiration: 168h
+      max_traces: 100000
+      backend: gcs
+      gcs:
+        bucket_name: traces-by-tempo
+        prefix: /tempo
+        chunk_buffer_size: 10000000
+        insecure: false
+

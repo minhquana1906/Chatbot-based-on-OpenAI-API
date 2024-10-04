@@ -1,5 +1,5 @@
-ansible/secrets/*
-terraform/terraform.tfstate*
-terraform/.terraform.lock.hcl
-terraform/.terraform
+iac/ansible/secrets/*
+iac/terraform/terraform.tfstate*
+iac/terraform/.terraform.lock.hcl
+iac/terraform/.terraform
 .env

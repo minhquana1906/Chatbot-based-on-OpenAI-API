@@ -13,7 +13,7 @@ spec:
   - host: chatbot.monitoring.com
     http:
       paths:
-      - path: /grafana
+      - path: /
         pathType: Prefix
         backend:
           service:
