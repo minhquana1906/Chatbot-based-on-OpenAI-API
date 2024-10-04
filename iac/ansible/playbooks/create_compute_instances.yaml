@@ -3,11 +3,11 @@
   tasks:
   - name: Create an instance
     gcp_compute_instance:
-      name: jenkins-instance
+      name: jenkins-server
       machine_type: e2-standard-2
       # Refer to https://cloud.google.com/compute/docs/images/os-details#ubuntu_lts
       # or use the command `gcloud compute images list --project=ubuntu-os-cloud`
-      zone: asia-northeast1-a
+      zone: asia-southeast1-c
       project: chatbot-openai-1906
       # The service account is needed to create the resources
       auth_kind: serviceaccount

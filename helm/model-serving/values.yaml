@@ -1,7 +1,7 @@
 image:
   repository: minhquan1906/openaichatbot
   tag: "latest"
-  pullPolicy: IfNotPresent
+  pullPolicy: Always
 
 replicaCount: 3
 

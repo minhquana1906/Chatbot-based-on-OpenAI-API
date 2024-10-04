@@ -41,4 +41,4 @@ storage:
     backend: gcs
     gcs:
       bucket_name: traces-by-tempo
-      service_account: ./secrets/chatbot-openai-1906-aee7016f9df4.json
+      service_account: ../secrets/chatbot-openai-1906-aee7016f9df4.json
