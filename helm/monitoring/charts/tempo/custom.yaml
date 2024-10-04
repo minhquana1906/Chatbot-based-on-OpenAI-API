@@ -1,16 +1,44 @@
-tempo:
-  metricsGenerator:
-    enabled: true
-    remoteWriteUrl: "http://prometheus.monitoring.svc:8080"
-    
-    storage:
-      trace_id_batch_size: 100
-      trace_id_expiration: 168h
-      max_traces: 100000
-      backend: gcs
-      gcs:
-        bucket_name: traces-by-tempo
-        prefix: /tempo
-        chunk_buffer_size: 10000000
-        insecure: false
+distributor:
+  receivers:
+    otlp:
+      protocols:
+        grpc:
 
+ingester:
+  trace_idle_period: 10s  
+  max_block_bytes: 1_000_000  
+  max_block_duration: 1m  
+
+compactor:
+  compaction:
+    compaction_window: 1h             
+    max_compaction_objects: 1000000   
+    block_retention: 1h
+    compacted_block_retention: 10m
+    flush_size_bytes: 5242880 
+
+distributor:
+  receivers:
+    otlp:
+      protocols:
+        grpc:
+
+ingester:
+  trace_idle_period: 10s  
+  max_block_bytes: 1_000_000  
+  max_block_duration: 1m  
+
+compactor:
+  compaction:
+    compaction_window: 1h             
+    max_compaction_objects: 1000000   
+    block_retention: 1h
+    compacted_block_retention: 10m
+    flush_size_bytes: 5242880 
+
+storage:
+  trace:
+    backend: gcs
+    gcs:
+      bucket_name: traces-by-tempo
+      service_account: ./secrets/chatbot-openai-1906-aee7016f9df4.json
