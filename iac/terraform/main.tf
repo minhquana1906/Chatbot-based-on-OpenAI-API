@@ -30,3 +30,27 @@ resource "google_container_cluster" "primary" {
     disk_size_gb = 30
   }
 }
+
+resource "google_storage_bucket" "loki-bucket" {
+  name          = var.bucket-loki
+  location      = var.region
+  force_destroy = true
+
+  uniform_bucket_level_access = true
+}
+
+resource "google_storage_bucket" "tempo-bucket" {
+  name          = var.bucket-tempo
+  location      = var.region
+  force_destroy = true
+
+  uniform_bucket_level_access = true
+}
+
+# resource "google_storage_bucket" "prometheus-bucket" {
+#   name          = var.bucket-prometheus
+#   location      = var.region
+#   force_destroy = true
+
+#   uniform_bucket_level_access = true
+# }

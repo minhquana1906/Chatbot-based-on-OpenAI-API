@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-config
+  namespace: monitoring
+  labels:
+    app.kubernetes.io/managed-by: Helm  # Nhãn cần thiết cho Helm
+  annotations:
+    meta.helm.sh/release-name: grafana   # Chú thích cần thiết cho Helm
+    meta.helm.sh/release-namespace: monitoring  # Chú thích cần thiết cho Helm
+data:
+  grafana.ini: |-
+    [database]
+    wal = true

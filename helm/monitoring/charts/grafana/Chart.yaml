@@ -1,6 +1,6 @@
 apiVersion: v2
-name: chatbot
-description: My Helm Chart for chatbot based on OpenAI API
+name: grafana
+description: A Helm chart for Grafana Dashboard
 
 type: application
 

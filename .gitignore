@@ -1,0 +1,7 @@
+iac/ansible/secrets/*
+iac/terraform/terraform.tfstate*
+iac/terraform/.terraform.lock.hcl
+iac/terraform/.terraform
+helm/monitoring/charts/secrets/*
+.env
+note.txt

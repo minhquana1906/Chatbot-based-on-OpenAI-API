@@ -1,0 +1,1 @@
+Grafana can be accessed via port 3000 on the following DNS name from within your cluster

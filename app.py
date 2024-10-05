@@ -1,9 +1,32 @@
-import streamlit as st
-import openai
 import os
-import joblib
-from dotenv import load_dotenv
 import time
+import joblib
+import openai
+import streamlit as st
+from dotenv import load_dotenv
+from opentelemetry import trace
+from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import OTLPSpanExporter
+from opentelemetry.sdk.resources import Resource
+from opentelemetry.sdk.trace import TracerProvider
+from opentelemetry.sdk.trace.export import BatchSpanProcessor
+
+
+def setup_tracer():
+    if isinstance(trace.get_tracer_provider(), TracerProvider):
+        return trace.get_tracer(__name__)
+    resource = Resource.create({"service.name": "chatbot"})
+    provider = TracerProvider(resource=resource)
+    otlp_exporter = OTLPSpanExporter(
+        endpoint="opentelemetry-collector.monitoring:4317",
+        insecure=True,
+    )
+    span_processor = BatchSpanProcessor(otlp_exporter)
+    provider.add_span_processor(span_processor)
+    trace.set_tracer_provider(provider)
+    return trace.get_tracer(__name__)
+
+
+tracer = setup_tracer()
 
 load_dotenv()
 openai.api_key = os.getenv("OPENAI_API_KEY")
@@ -41,7 +64,6 @@ class ChatApp:
         self.initialize_session_state()
 
     def new_chat(self):
-        # Create a new chat session
         st.session_state.chat_id = str(time.time())
         st.session_state.messages = []
         st.session_state.chat_title = f"ChatSession-{st.session_state.chat_id}"
@@ -60,13 +82,18 @@ class ChatApp:
                 st.session_state.messages = joblib.load(
                     f"data/{st.session_state.chat_id}-st_messages"
                 )
-            except:
+            except FileNotFoundError:
                 st.session_state.messages = []
+                self.new_chat()
+            except Exception as e:
+                st.session_state.messages = []
+                st.error(f"An error occurred: {e}")
+        else:
+            self.new_chat()
 
     def display_sidebar(self):
         with st.sidebar:
             st.write("# Chat History")
-            # Update the select box options
             unique_chat_ids = list(set(self.previous_chats.keys()))
             selected_chat_id = st.selectbox(
                 label="Previous chats",
@@ -80,7 +107,6 @@ class ChatApp:
                 placeholder="Select a previous chat",
             )
 
-            # Update session state with the selected chat id
             if selected_chat_id != st.session_state.chat_id:
                 st.session_state.chat_id = selected_chat_id
                 st.session_state.chat_title = self.previous_chats[selected_chat_id]
@@ -88,38 +114,44 @@ class ChatApp:
 
             if st.button("New Chat"):
                 self.new_chat()
-                # Reload the chat history to update the selectbox
                 self.previous_chats = self.load_chat_history()
 
             if st.button("Clear All Chats"):
                 self.clear_all_chats()
 
     def display_chat(self):
-        st.write("# Chat with GPT-3.5-turbo")
+        st.write("# Chat with Molly-Q1")
         st.markdown(
             """
-            **Welcome to GPT-3.5-turbo chatbot!** 🤖\n
+            **Welcome to Molly-Q1!** 🤖\n
             I'm here to help you with any questions you have. Feel free to ask me anything, and I'll do my best to assist you!
             """
         )
         for message in st.session_state.messages:
             with st.chat_message(name=message["role"], avatar=message.get("avatar")):
                 st.markdown(message["content"])
-        if prompt := st.chat_input("Your message here..."):
+        if prompt := st.chat_input("Enter a prompt here..."):
             with st.chat_message("user"):
                 st.markdown(prompt)
             st.session_state.messages.append({"role": "user", "content": prompt})
-            response = openai.ChatCompletion.create(
-                model="gpt-3.5-turbo",
-                messages=[
-                    {"role": m["role"], "content": m["content"]}
-                    for m in st.session_state.messages
-                ],
-                stream=True,
-            )
+            with tracer.start_as_current_span("send_prompt"):
+                start_time = time.time()  # Thời gian bắt đầu
+                try:
+                    response = openai.ChatCompletion.create(
+                        model="gpt-3.5-turbo",
+                        messages=[
+                            {"role": m["role"], "content": m["content"]}
+                            for m in st.session_state.messages
+                        ],
+                        stream=True,
+                    )
+                except Exception as e:
+                    st.error(f"Error occurred while sending prompt: {e}")
+
             with st.chat_message(name="assistant"):
                 message_placeholder = st.empty()
                 full_response = ""
+
                 for chunk in response:
                     chunk_message = chunk["choices"][0]["delta"].get("content", "")
                     full_response += chunk_message
