@@ -1,6 +1,5 @@
 import os
 import time
-
 import joblib
 import openai
 import streamlit as st
@@ -10,38 +9,27 @@ from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import OTLPSpanExport
 from opentelemetry.sdk.resources import Resource
 from opentelemetry.sdk.trace import TracerProvider
 from opentelemetry.sdk.trace.export import BatchSpanProcessor
-from prometheus_client import Counter, Histogram, start_http_server
 
-resource = Resource.create({"service.name": "chatbot"})
-trace.set_tracer_provider(TracerProvider(resource=resource))
-tracer = trace.get_tracer(__name__)
 
-otlp_exporter = OTLPSpanExporter(
-    endpoint="http://opentelemetry-collector.monitoring.svc.cluster.local:4318",
-    insecure=True,
-)
-span_processor = BatchSpanProcessor(otlp_exporter)
-trace.get_tracer_provider().add_span_processor(span_processor)
+def setup_tracer():
+    if isinstance(trace.get_tracer_provider(), TracerProvider):
+        return trace.get_tracer(__name__)
+    resource = Resource.create({"service.name": "chatbot"})
+    provider = TracerProvider(resource=resource)
+    otlp_exporter = OTLPSpanExporter(
+        endpoint="tempo.monitoring.svc.cluster.local:4317",
+        insecure=True,
+    )
+    span_processor = BatchSpanProcessor(otlp_exporter)
+    provider.add_span_processor(span_processor)
+    trace.set_tracer_provider(provider)
+    return trace.get_tracer(__name__)
+
+
+tracer = setup_tracer()
 
 load_dotenv()
 openai.api_key = os.getenv("OPENAI_API_KEY")
-
-
-chat_sessions_total = Counter("chat_sessions_total", "Total number of chat sessions")
-response_time_seconds = Histogram(
-    "response_time_seconds", "Response time for sending prompt", ["method"]
-)
-openai_requests_total = Counter(
-    "openai_requests_total", "Total requests to OpenAI", ["status"]
-)
-openai_request_errors_total = Counter(
-    "openai_request_errors_total", "Total errors from OpenAI requests", ["error_type"]
-)
-messages_sent_total = Counter(
-    "messages_sent_total", "Total messages sent in chats", ["role"]
-)
-
-start_http_server(8099, addr="0.0.0.0")
 
 
 class ChatApp:
@@ -76,7 +64,6 @@ class ChatApp:
         self.initialize_session_state()
 
     def new_chat(self):
-        chat_sessions_total.inc()
         st.session_state.chat_id = str(time.time())
         st.session_state.messages = []
         st.session_state.chat_title = f"ChatSession-{st.session_state.chat_id}"
@@ -147,7 +134,6 @@ class ChatApp:
             with st.chat_message("user"):
                 st.markdown(prompt)
             st.session_state.messages.append({"role": "user", "content": prompt})
-            messages_sent_total.inc(labels={"role": "user"})
             with tracer.start_as_current_span("send_prompt"):
                 start_time = time.time()  # Thời gian bắt đầu
                 try:
@@ -159,17 +145,13 @@ class ChatApp:
                         ],
                         stream=True,
                     )
-                    openai_requests_total.inc(labels={"status": "success"})
                 except Exception as e:
-                    openai_requests_total.inc(labels={"status": "error"})
-                    openai_request_errors_total.inc(labels={"error_type": str(e)})
-
-                response_time = time.time() - start_time
-                response_time_seconds.observe(response_time)
+                    st.error(f"Error occurred while sending prompt: {e}")
 
             with st.chat_message(name="assistant"):
                 message_placeholder = st.empty()
                 full_response = ""
+
                 for chunk in response:
                     chunk_message = chunk["choices"][0]["delta"].get("content", "")
                     full_response += chunk_message
