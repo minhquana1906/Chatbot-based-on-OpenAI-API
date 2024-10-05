@@ -9,4 +9,5 @@ services:
     ports:
       - "8501:8501"
     volumes:
-      - ./chat-store:/app/chat-store
+      - ./data:/app/data
+  
