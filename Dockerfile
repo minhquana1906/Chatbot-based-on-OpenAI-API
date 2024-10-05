@@ -7,6 +7,8 @@ WORKDIR /app
 # Copy the current directory contents into the container at /app
 COPY . /app
 
+RUN mkdir -p /app/chat-store
+
 # Expose port 8051 to be able to access the Streamlit app
 EXPOSE 8501
 
