@@ -34,13 +34,8 @@ openai.api_key = os.getenv("OPENAI_API_KEY")
 
 class ChatApp:
     def __init__(self):
-        self.ensure_data_directory_exists()
         self.previous_chats = self.load_chat_history()
         self.initialize_session_state()
-
-    def ensure_data_directory_exists(self):
-        if not os.path.exists("data"):
-            os.makedirs("data")
 
     def initialize_session_state(self):
         if "chat_id" not in st.session_state:
