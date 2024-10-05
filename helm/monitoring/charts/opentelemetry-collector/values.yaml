@@ -281,25 +281,25 @@ ports:
     hostPort: 4318
     protocol: TCP
   jaeger-compact:
-    enabled: true
+    enabled: false
     containerPort: 6831
     servicePort: 6831
     hostPort: 6831
     protocol: UDP
   jaeger-thrift:
-    enabled: true
+    enabled: false
     containerPort: 14268
     servicePort: 14268
     hostPort: 14268
     protocol: TCP
   jaeger-grpc:
-    enabled: true
+    enabled: false
     containerPort: 14250
     servicePort: 14250
     hostPort: 14250
     protocol: TCP
   zipkin:
-    enabled: true
+    enabled: false
     containerPort: 9411
     servicePort: 9411
     hostPort: 9411

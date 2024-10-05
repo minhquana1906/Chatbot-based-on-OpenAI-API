@@ -17,7 +17,7 @@ def setup_tracer():
     resource = Resource.create({"service.name": "chatbot"})
     provider = TracerProvider(resource=resource)
     otlp_exporter = OTLPSpanExporter(
-        endpoint="tempo.monitoring.svc.cluster.local:4317",
+        endpoint="opentelemetry-collector.monitoring:4317",
         insecure=True,
     )
     span_processor = BatchSpanProcessor(otlp_exporter)

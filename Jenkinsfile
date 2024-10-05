@@ -12,22 +12,27 @@ pipeline {
         registry = 'minhquan1906/openaichatbot'
         registryCredential = 'dockerhub'      
     }
-
     stages {
         stage('Build') {
             steps {
                 script {
                     echo 'Building image for deployment..'
                     dockerImage = docker.build registry + ":$BUILD_NUMBER" 
-                    echo 'Pushing image to dockerhub..'
-                    docker.withRegistry( '', registryCredential ) {
+                    }
+                }
+            }
+        }
+        stage('Push') {
+            steps {
+                script {
+                    echo 'Pushing image to Docker Hub..'
+                    docker.withRegistry('', registryCredential) {
                         dockerImage.push()
                         dockerImage.push('latest')
                     }
                 }
             }
         }
-        
         stage('Deploy') {
             agent {
                 kubernetes {
