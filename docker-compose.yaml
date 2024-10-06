@@ -8,6 +8,6 @@ services:
     image: minhquan1906/openaichatbot
     ports:
       - "8501:8501"
-    # volumes:
-    #   - ./data:/app/data
+    volumes:
+      - ./data:/app/data
   
