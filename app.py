@@ -32,6 +32,12 @@ load_dotenv()
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
 
+def ensure_data_directory():
+    data_directory = "/app/data"
+    if not os.path.exists(data_directory):
+        os.makedirs(data_directory)
+
+
 class ChatApp:
     def __init__(self):
         self.previous_chats = self.load_chat_history()
@@ -44,24 +50,30 @@ class ChatApp:
             st.session_state.chat_title = ""
         if "messages" not in st.session_state:
             st.session_state.messages = []
+        if "refresh_sidebar" not in st.session_state:
+            st.session_state.refresh_sidebar = False
 
     def load_chat_history(self):
         try:
-            return joblib.load("data/chats_history")
+            return joblib.load("/app/data/chats_history")
         except:
             return {}
 
     def save_chat_history(self):
-        joblib.dump(self.previous_chats, "data/chats_history")
+        joblib.dump(self.previous_chats, "/app/data/chats_history")
 
     def clear_all_chats(self):
         self.previous_chats.clear()
-        joblib.dump(self.previous_chats, "data/chats_history")
-        for filename in os.listdir("data/"):
-            file_path = os.path.join("data/", filename)
+        joblib.dump(self.previous_chats, "/app/data/chats_history")
+        for filename in os.listdir("/app/data/"):
+            file_path = os.path.join("/app/data/", filename)
             if os.path.isfile(file_path):
                 os.remove(file_path)
         self.initialize_session_state()
+        st.session_state.chat_id = None
+        st.session_state.chat_title = ""
+        st.session_state.messages = []
+        st.session_state.refresh_sidebar = True
 
     def new_chat(self):
         st.session_state.chat_id = str(time.time())
@@ -73,14 +85,15 @@ class ChatApp:
 
     def save_current_session(self):
         joblib.dump(
-            st.session_state.messages, f"data/{st.session_state.chat_id}-st_messages"
+            st.session_state.messages,
+            f"/app/data/{st.session_state.chat_id}-st_messages",
         )
 
     def load_current_session(self):
         if st.session_state.chat_id and st.session_state.chat_id in self.previous_chats:
             try:
                 st.session_state.messages = joblib.load(
-                    f"data/{st.session_state.chat_id}-st_messages"
+                    f"/app/data/{st.session_state.chat_id}-st_messages"
                 )
             except FileNotFoundError:
                 st.session_state.messages = []
@@ -118,6 +131,9 @@ class ChatApp:
 
             if st.button("Clear All Chats"):
                 self.clear_all_chats()
+                if st.session_state.refresh_sidebar:
+                    st.session_state.refresh_sidebar = False
+                    st.experimental_rerun()
 
     def display_chat(self):
         st.write("# Chat with Molly-Q1")
@@ -168,5 +184,6 @@ class ChatApp:
 
 
 if __name__ == "__main__":
+    ensure_data_directory()
     app = ChatApp()
     app.run()
