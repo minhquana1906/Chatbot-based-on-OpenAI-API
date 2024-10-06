@@ -47,18 +47,18 @@ class ChatApp:
 
     def load_chat_history(self):
         try:
-            return joblib.load("data/chats_history")
+            return joblib.load("/app/data/chats_history")
         except:
             return {}
 
     def save_chat_history(self):
-        joblib.dump(self.previous_chats, "data/chats_history")
+        joblib.dump(self.previous_chats, "/app/data/chats_history")
 
     def clear_all_chats(self):
         self.previous_chats.clear()
-        joblib.dump(self.previous_chats, "data/chats_history")
-        for filename in os.listdir("data/"):
-            file_path = os.path.join("data/", filename)
+        joblib.dump(self.previous_chats, "/app/data/chats_history")
+        for filename in os.listdir("/app/data/"):
+            file_path = os.path.join("/app/data/", filename)
             if os.path.isfile(file_path):
                 os.remove(file_path)
         self.initialize_session_state()
@@ -73,14 +73,15 @@ class ChatApp:
 
     def save_current_session(self):
         joblib.dump(
-            st.session_state.messages, f"data/{st.session_state.chat_id}-st_messages"
+            st.session_state.messages,
+            f"/app/data/{st.session_state.chat_id}-st_messages",
         )
 
     def load_current_session(self):
         if st.session_state.chat_id and st.session_state.chat_id in self.previous_chats:
             try:
                 st.session_state.messages = joblib.load(
-                    f"data/{st.session_state.chat_id}-st_messages"
+                    f"/app/data/{st.session_state.chat_id}-st_messages"
                 )
             except FileNotFoundError:
                 st.session_state.messages = []

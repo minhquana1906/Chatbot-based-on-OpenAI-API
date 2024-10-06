@@ -18,7 +18,7 @@ spec:
       containers:
         - name: {{ .Release.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}  # Không cần dấu ngoặc kép
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - containerPort: 8501
           volumeMounts:
@@ -26,6 +26,5 @@ spec:
               mountPath: /app/data
       volumes:
         - name: data
-          hostPath:
-            path: /data
-            type: DirectoryOrCreate
+          persistentVolumeClaim:
+            claimName: chatbot-pvc

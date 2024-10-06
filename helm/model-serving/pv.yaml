@@ -9,4 +9,4 @@ spec:
     - ReadWriteOnce
   storageClassName: standard-rwo
   hostPath:
-    path: /home/minhquana/workspace/Chatbot-based-on-OpenAI-API/data
+    path: /mnt/data
