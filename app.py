@@ -50,6 +50,8 @@ class ChatApp:
             st.session_state.chat_title = ""
         if "messages" not in st.session_state:
             st.session_state.messages = []
+        if "refresh_sidebar" not in st.session_state:
+            st.session_state.refresh_sidebar = False
 
     def load_chat_history(self):
         try:
@@ -71,6 +73,7 @@ class ChatApp:
         st.session_state.chat_id = None
         st.session_state.chat_title = ""
         st.session_state.messages = []
+        st.session_state.refresh_sidebar = True
 
     def new_chat(self):
         st.session_state.chat_id = str(time.time())
@@ -128,7 +131,9 @@ class ChatApp:
 
             if st.button("Clear All Chats"):
                 self.clear_all_chats()
-                st.experimental_rerun()  # Rerun the app to update the sidebar
+                if st.session_state.refresh_sidebar:
+                    st.session_state.refresh_sidebar = False
+                    st.experimental_rerun()
 
     def display_chat(self):
         st.write("# Chat with Molly-Q1")
