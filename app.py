@@ -68,6 +68,9 @@ class ChatApp:
             if os.path.isfile(file_path):
                 os.remove(file_path)
         self.initialize_session_state()
+        st.session_state.chat_id = None
+        st.session_state.chat_title = ""
+        st.session_state.messages = []
 
     def new_chat(self):
         st.session_state.chat_id = str(time.time())
@@ -125,6 +128,7 @@ class ChatApp:
 
             if st.button("Clear All Chats"):
                 self.clear_all_chats()
+                st.experimental_rerun()  # Rerun the app to update the sidebar
 
     def display_chat(self):
         st.write("# Chat with Molly-Q1")
