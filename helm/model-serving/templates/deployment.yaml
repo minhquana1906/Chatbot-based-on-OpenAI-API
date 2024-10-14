@@ -21,10 +21,3 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - containerPort: 8501
-      #     volumeMounts:
-      #       - name: data
-      #         mountPath: /app/data
-      # volumes:
-      #   - name: data
-      #     persistentVolumeClaim:
-      #       claimName: chatbot-pvc

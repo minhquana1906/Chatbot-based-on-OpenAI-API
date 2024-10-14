@@ -13,17 +13,7 @@ variable "zone" {
   default     = "asia-southeast1-a"
 }
 
-variable "bucket-loki" {
-  description = "Bucket for loki to store logs"
-  default     = "logs-by-loki"
-}
-
 variable "bucket-tempo" {
   description = "Bucket for tempo to store logs"
   default     = "traces-by-tempo"
 }
-
-# variable "bucket-prometheus" {
-#   description = "Bucket for prometheus to store metrics"
-#   default     = "metrics-by-prometheus"
-# }
