@@ -166,8 +166,8 @@ sudo nano /etc/hosts
 [YOUR_INGRESS_IP_ADDRESS] [YOUR_CUSTOM_DOMAIN]
 ```
 After that, you can access the chatbot application using your custom domain. In my case, I use `chatbot.custom.com` as my custom domain.
+![](assets/chatbot-demo.gif)
 
-# Video here
 
 #### 4.3. Deploy Monitoring Stack
 For monitoring and logging
