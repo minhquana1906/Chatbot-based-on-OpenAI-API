@@ -9,44 +9,44 @@ This repository provides an in-depth overview and the necessary resources to dep
 2. [Project Structure](##2.-Project-Structure)
 
 3. [Getting Started](##3.-Getting-Started)
-    
+
     1. [Create Project in GCP](###3.1.-Create-Project-in-GCP)
-    
+
     2. [Install gcloud CLI](###3.2.-Install-gcloud-CLI)
-    
+
     3. [Create service account and download the key](###3.3.-Create-service-account-and-download-the-key)
-    
+
     4. [Infrastructure Provisioning Using Terraform](###3.4.-Infrastructure-Provisioning-Using-Terraform)
-    
+
     5. [Connect to the GKE Cluster](###3.5.-Connect-to-the-GKE-Cluster)
 
 4. [Deploy Services Using Helm and kubectl](##4.-Deploy-Services-Using-Helm-and-kubectl)
-    
+
     1. [Deploy Nginx Ingress Controller](###4.1.-Deploy-Nginx-Ingress-Controller)
-    
+
     2. [Deploy Application to GKE](###4.2.-Deploy-Application-to-GKE)
-    
+
     3. [Deploy Monitoring Stack](###4.3.-Deploy-Monitoring-Stack)
 5. [CI/CD Pipeline with Jenkins](##5.-CI/CD-Pipeline-with-Jenkins)
-    
+
     1. [Setup GCE Instance with Ansible](###5.1.-Setup-GCE-Instance-with-Ansible)
-    
+
     2. [Install Docker and Jenkins on GCE Instance](###5.2.-Install-Docker-and-Jenkins-on-GCE-Instance)
-    
+
     3. [Setup Jenkins Pipeline](###5.3.-Setup-Jenkins-Pipeline)
-        
+
         - [Install Jenkins plugins](####5.3.1-Install-Jenkins-plugins)
-        
+
         - [Create Github Access Token](####5.3.2-Create-Github-Access-Token)
-        
+
         - [Create Docker Hub Access Token](####5.3.3-Create-Docker-Hub-Access-Token)
-        
+
         - [Create Webhook in Github](####5.3.4-Create-Webhook-in-Github)
-        
+
         - [Create Jenkins Pipeline](####5.3.5-Create-Jenkins-Pipeline)
-        
+
         - [Install Helm on Jenkins to enable CI/CD pipeline](####5.3.6-Install-Helm-on-Jenkins-to-enable-CI/CD-pipeline)
-        
+
         - [Create CI/CD Jenkins Pipeline](####5.3.7-Create-CI/CD-Jenkins-Pipeline)
 
 ## 1. Architecture Overview
@@ -121,16 +121,16 @@ gcloud auth application-default login
 
 #### 3.3. Create service account and download the key
 Create your own service account in  [here](https://console.cloud.google.com/iam-admin/serviceaccounts) and download the key in JSON format. In this project, we will create 2 service accounts, one for Ansible and the other for storing Tempo traces.
-- For Ansible, you can create a service account with the **Compute Admin** role: 
+- For Ansible, you can create a service account with the **Compute Admin** role:
 ![alt text](assets/create_ansible_service_account.png)
 - For Tempo, create a service account with the **Storage Admin** role:
-![alt text](assets/create_tempo_service_account.png) 
+![alt text](assets/create_tempo_service_account.png)
 
 After creating the service accounts, download the keys in JSON format and save them in the `iac/ansible/secrets` directory. You can save the key for Tempo at `helm/monitoring/charts/secrets` and add to your `custom.yaml` file in the service account section.
 
 **Note:** These roles are just for demonstration purposes. You should assign the least privilege roles to the service accounts based on your requirements.
 
-#### 3.4. Infrastructure provisioning using Terraform 
+#### 3.4. Infrastructure provisioning using Terraform
 Navigate to the `iac/terraform` directory to initialize the Terraform configuration:
 ```bash
 cd iac/terraform
@@ -174,14 +174,14 @@ Navigate to the `helm/nginx-ingress` directory and run the following commands to
 cd helm/nginx-ingress
 kubectl create namespace nginx-ingress
 kubens nginx-ingress
-helm upgrade --install nginx-ingress-controller . 
+helm upgrade --install nginx-ingress-controller .
 ```
 After that, Nginx Ingress Controller will be deployed in the `nginx-ingress` namespace. You can verify all resources in `nginx-ingress` namespace using the following command:
 ```bash
 kubectl get all -n nginx-ingress
 ```
 
-#### 4.2. Deploy application to GKE 
+#### 4.2. Deploy application to GKE
 Navigate to the `helm/model-serving` directory and run the following commands to deploy the chatbot application:
 ```bash
 cd helm/model-serving
@@ -304,7 +304,7 @@ ansible-playbook playbooks/create_compute_instances.yaml
 ansible-playbook playbooks/install_docker_jenkins.yaml
 ```
 
-Once ansible playbook is executed successfully, you can see external IP of the GCE instance in the GCP UI. 
+Once ansible playbook is executed successfully, you can see external IP of the GCE instance in the GCP UI.
 ![](assets/gce-ui.png)
 
 Connect to jenkins-chatbot instance  using the external IP address of the GCE instance by SSH protocol:
@@ -321,7 +321,7 @@ If Docker is installed successfully, you can follow the instructions [here](http
 
 To use jenkins, you can access the Jenkins UI using [YOUR_EXTERNAL_IP_ADDRESS]:8081 in your browser. You can get the initial password from the GCE instance using the following commands:
 ```bash
-docker exec -ti jenkins-chatbot 
+docker exec -ti jenkins-chatbot
 cat /var/jenkins_home/secrets/initialAdminPassword
 ```
 Copy the password and you can access Jenkins UI.

@@ -10,7 +10,7 @@ pipeline {
 
     environment{
         registry = 'minhquan1906/openaichatbot'
-        registryCredential = 'dockerhub'      
+        registryCredential = 'dockerhub'
     }
 
     stages {
@@ -18,7 +18,7 @@ pipeline {
             steps {
                 script {
                     echo 'Building image for deployment..'
-                    dockerImage = docker.build registry + ":$BUILD_NUMBER" 
+                    dockerImage = docker.build registry + ":$BUILD_NUMBER"
                     echo 'Pushing image to dockerhub..'
                     docker.withRegistry( '', registryCredential ) {
                         dockerImage.push()
@@ -27,7 +27,7 @@ pipeline {
                 }
             }
         }
-        
+
         stage('Deploy') {
             agent {
                 kubernetes {

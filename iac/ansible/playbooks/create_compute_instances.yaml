@@ -12,7 +12,7 @@
       # The service account is needed to create the resources
       auth_kind: serviceaccount
       service_account_file: ../secrets/chatbot-openai-1906-43a7fb0b56ea.json
-      
+
       disks:
         - auto_delete: true
           boot: true
@@ -46,7 +46,7 @@
       auth_kind: serviceaccount
       service_account_file: ../secrets/chatbot-openai-1906-43a7fb0b56ea.json
       state: present
-      
+
   - name: Create inbound firewall rule for port 8501
     gcp_compute_firewall:
       name: allow-port-8501
@@ -64,7 +64,7 @@
       auth_kind: serviceaccount
       service_account_file: ../secrets/chatbot-openai-1906-43a7fb0b56ea.json
       state: present
-      
+
   - name: Create inbound firewall rule for port 3000
     gcp_compute_firewall:
       name: allow-port-3000
@@ -82,4 +82,4 @@
       auth_kind: serviceaccount
       service_account_file: ../secrets/chatbot-openai-1906-43a7fb0b56ea.json
       state: present
-              
+
