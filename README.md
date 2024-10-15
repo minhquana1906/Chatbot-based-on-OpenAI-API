@@ -386,7 +386,7 @@ The CI/CD pipeline will consist of two stages:
 - Deploying the application with the latest image from DockerHub to GKE cluster.
 
 Now, let create our pipeline. Go to New Item > Multibranch Pipeline and add your github url, github token and dockerhub token.
-![](assets/deploy-ci-cd.gif)
+![](assets/deploy-ci-cd_new.gif)
 
 The pipeline will take about 5 - 10 minutes. You can confirm the successful deployment of the application to the GKE cluster if you see the following output in the pipeline log:
 ![](assets/pipeline-success.png)
@@ -398,4 +398,4 @@ Now, you have successfulle run your CICD pipeline with Jenkins. Let checkout whe
 ```bash
 kubectl get pods -n model-serving
 ```
-You can test our app by typing chatbot.custom.com on your web browser.
+You can test our app by typing `chatbot.custom.com` on your web browser.
