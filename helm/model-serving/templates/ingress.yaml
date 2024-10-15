@@ -4,7 +4,7 @@ metadata:
   name: {{ .Release.Name }}-nginx-ingress
   namespace:  model-serving
   annotations:
-    kubernetes.io/ingress.class: "nginx" 
+    kubernetes.io/ingress.class: "nginx"
     nginx.org/websocket-services: {{ .Release.Name }}
 
 spec:

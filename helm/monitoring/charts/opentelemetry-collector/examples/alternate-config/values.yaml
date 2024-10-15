@@ -30,5 +30,5 @@ alternateConfig:
         exporters:
           - debug
       metrics:
-        exporters: 
+        exporters:
           - debug

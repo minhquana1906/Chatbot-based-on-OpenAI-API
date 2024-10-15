@@ -1,0 +1,2 @@
+- You should place your service account key file in the `iac/ansible/secrets` directory. 
+- In the inventory file, you should replace your external IP of your VM instance and your ssh key file path.

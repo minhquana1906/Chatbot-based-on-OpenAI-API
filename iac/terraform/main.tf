@@ -2,10 +2,10 @@ terraform {
   required_providers {
     google = {
       source  = "hashicorp/google"
-      version = "4.80.0" 
+      version = "4.80.0"
     }
   }
-  required_version = "1.9.5" 
+  required_version = "1.9.5"
 }
 
 provider "google" {
@@ -26,7 +26,7 @@ resource "google_container_cluster" "primary" {
 
   // Node configuration
   node_config {
-    machine_type = "e2-standard-2" 
+    machine_type = "e2-standard-2"
     disk_size_gb = 30
   }
 }
