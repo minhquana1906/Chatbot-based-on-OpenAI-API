@@ -4,4 +4,3 @@ iac/terraform/.terraform.lock.hcl
 iac/terraform/.terraform
 helm/monitoring/charts/secrets/*
 .env
-assets/*

@@ -4,7 +4,50 @@
 This repository provides an in-depth overview and the necessary resources to deploy a highly scalable and efficient chatbot infrastructure. The system leverages a combination of cutting-edge tools and platforms, including Docker, Kubernetes, Ansible, Terraform, Grafana, Prometheus, and more. The architecture is designed to ensure seamless integration, deployment, monitoring, and management of the chatbot service.
 
 ## Table of Contents
-1. 
+1. [Architecture Overview](##1.-Architecture-Overview)
+
+2. [Project Structure](##2.-Project-Structure)
+
+3. [Getting Started](##3.-Getting-Started)
+    
+    1. [Create Project in GCP](###3.1.-Create-Project-in-GCP)
+    
+    2. [Install gcloud CLI](###3.2.-Install-gcloud-CLI)
+    
+    3. [Create service account and download the key](###3.3.-Create-service-account-and-download-the-key)
+    
+    4. [Infrastructure Provisioning Using Terraform](###3.4.-Infrastructure-Provisioning-Using-Terraform)
+    
+    5. [Connect to the GKE Cluster](###3.5.-Connect-to-the-GKE-Cluster)
+
+4. [Deploy Services Using Helm and kubectl](##4.-Deploy-Services-Using-Helm-and-kubectl)
+    
+    1. [Deploy Nginx Ingress Controller](###4.1.-Deploy-Nginx-Ingress-Controller)
+    
+    2. [Deploy Application to GKE](###4.2.-Deploy-Application-to-GKE)
+    
+    3. [Deploy Monitoring Stack](###4.3.-Deploy-Monitoring-Stack)
+5. [CI/CD Pipeline with Jenkins](##5.-CI/CD-Pipeline-with-Jenkins)
+    
+    1. [Setup GCE Instance with Ansible](###5.1.-Setup-GCE-Instance-with-Ansible)
+    
+    2. [Install Docker and Jenkins on GCE Instance](###5.2.-Install-Docker-and-Jenkins-on-GCE-Instance)
+    
+    3. [Setup Jenkins Pipeline](###5.3.-Setup-Jenkins-Pipeline)
+        
+        - [Install Jenkins plugins](####5.3.1-Install-Jenkins-plugins)
+        
+        - [Create Github Access Token](####5.3.2-Create-Github-Access-Token)
+        
+        - [Create Docker Hub Access Token](####5.3.3-Create-Docker-Hub-Access-Token)
+        
+        - [Create Webhook in Github](####5.3.4-Create-Webhook-in-Github)
+        
+        - [Create Jenkins Pipeline](####5.3.5-Create-Jenkins-Pipeline)
+        
+        - [Install Helm on Jenkins to enable CI/CD pipeline](####5.3.6-Install-Helm-on-Jenkins-to-enable-CI/CD-pipeline)
+        
+        - [Create CI/CD Jenkins Pipeline](####5.3.7-Create-CI/CD-Jenkins-Pipeline)
 
 ## 1. Architecture Overview
 ![](assets/Chatbot_based_on_OpenAI_API.drawio.png)
@@ -59,12 +102,6 @@ The chatbot infrastructure is designed with a microservices architecture to ensu
 └── requirements.txt
 ```
 
-<!-- ## Tools and Technologies
-### Containerization and Orchestration
-- **Docker**: Used for containerizing the chatbot application and its dependencies.
-- **Kubernetes (GKE):** Manages the deployment, scaling, and operation of containerized applications.
-Helm: Facilitates the management of Kubernetes applications.
- -->
 
 ## 3. Getting Started
 #### 3.1. Create [Project](https://console.cloud.google.com/projectcreate) in GCP
@@ -93,7 +130,7 @@ After creating the service accounts, download the keys in JSON format and save t
 
 **Note:** These roles are just for demonstration purposes. You should assign the least privilege roles to the service accounts based on your requirements.
 
-#### 3.4. Infrastructure Provisioning Using Terraform 
+#### 3.4. Infrastructure provisioning using Terraform 
 Navigate to the `iac/terraform` directory to initialize the Terraform configuration:
 ```bash
 cd iac/terraform
@@ -313,7 +350,7 @@ Go to Account Settings > Personal Access Token > Generate New Token.
 Go to your repository > Settings > Webhooks > Add webhook. Then, add the Jenkins URL and append `/github-webhook/` at the end of the URL. You can also add a secret token for security purposes.
 ![](assets/webhook.gif)
 
-#### 5.3.4 Create Jenkins Pipeline
+#### 5.3.5 Create Jenkins Pipeline
 First of all, let grant permissions to the service account which is trying to connect to our cluster by the following command:
 ```bash
 kubectl create ns model-serving
@@ -333,23 +370,23 @@ kubectl create clusterrolebinding anonymous-admin-binding \
 
 Next, let get your certificate key and cluster url from with the following command:
 ```bash
- ~/.kube/config.
+cat ~/.kube/config
  ```
 Then, go to Manage Jenkins > Cloud > New cloud.
 ![](assets/create-cloud.gif)
 
 
-#### 5.3.5 Install Helm on Jenkins to enable CI/CD pipeline
+#### 5.3.6 Install Helm on Jenkins to enable CI/CD pipeline
 You can use the `BuildJenkins-Dockerfile` to build a new Docker image. After that, push this newly created image to Dockerhub. Finally replace the image reference at containerTemplate in Jenkinsfile or you can reuse my image minhquan1906/jenkins:lts-jdk17.
 
-#### 5.3.6 Create CI/CD Jenkins Pipeline
+#### 5.3.7 Create CI/CD Jenkins Pipeline
 The CI/CD pipeline will consist of two stages:
 
 - Building the image, and pushing the image to Docker Hub.
 - Deploying the application with the latest image from DockerHub to GKE cluster.
 
 Now, let create our pipeline. Go to New Item > Multibranch Pipeline and add your github url, github token and dockerhub token.
-![](assets/deploy-ci-cd.gif)
+![](assets/deploy-ci-cd_new.gif)
 
 The pipeline will take about 5 - 10 minutes. You can confirm the successful deployment of the application to the GKE cluster if you see the following output in the pipeline log:
 ![](assets/pipeline-success.png)
@@ -361,4 +398,4 @@ Now, you have successfulle run your CICD pipeline with Jenkins. Let checkout whe
 ```bash
 kubectl get pods -n model-serving
 ```
-You can test our app by typing chatbot.custom.com on your web browser.
+You can test our app by typing `chatbot.custom.com` on your web browser.
