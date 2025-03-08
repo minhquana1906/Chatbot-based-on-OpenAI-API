@@ -4,53 +4,55 @@
 This repository provides an in-depth overview and the necessary resources to deploy a highly scalable and efficient chatbot infrastructure. The system leverages a combination of cutting-edge tools and platforms, including Docker, Kubernetes, Ansible, Terraform, Grafana, Prometheus, and more. The architecture is designed to ensure seamless integration, deployment, monitoring, and management of the chatbot service.
 
 ## Table of Contents
-1. [Architecture Overview](##1.-Architecture-Overview)
+1. [Architecture Overview](#1-architecture-overview)
 
-2. [Project Structure](##2.-Project-Structure)
+2. [Project Structure](#2-project-structure)
 
-3. [Getting Started](##3.-Getting-Started)
+3. [Getting Started](#3-getting-started)
 
-    1. [Create Project in GCP](###3.1.-Create-Project-in-GCP)
+    1. [Create Project in GCP](#31-create-project-in-gcp)
 
-    2. [Install gcloud CLI](###3.2.-Install-gcloud-CLI)
+    2. [Install gcloud CLI](#32-install-gcloud-cli)
 
-    3. [Create service account and download the key](###3.3.-Create-service-account-and-download-the-key)
+    3. [Create service account and download the key](#33-create-service-account-and-download-the-key)
 
-    4. [Infrastructure Provisioning Using Terraform](###3.4.-Infrastructure-Provisioning-Using-Terraform)
+    4. [Infrastructure Provisioning Using Terraform](#34-infrastructure-provisioning-using-terraform)
 
-    5. [Connect to the GKE Cluster](###3.5.-Connect-to-the-GKE-Cluster)
+    5. [Connect to the GKE Cluster](#35-connect-to-the-gke-cluster)
 
-4. [Deploy Services Using Helm and kubectl](##4.-Deploy-Services-Using-Helm-and-kubectl)
+4. [Deploy Services Using Helm and kubectl](#4-deploy-services-using-helm-and-kubectl)
 
-    1. [Deploy Nginx Ingress Controller](###4.1.-Deploy-Nginx-Ingress-Controller)
+    1. [Deploy Nginx Ingress Controller](#41-deploy-nginx-ingress-controller)
 
-    2. [Deploy Application to GKE](###4.2.-Deploy-Application-to-GKE)
+    2. [Deploy Application to GKE](#42-deploy-application-to-gke)
 
-    3. [Deploy Monitoring Stack](###4.3.-Deploy-Monitoring-Stack)
-5. [CI/CD Pipeline with Jenkins](##5.-CI/CD-Pipeline-with-Jenkins)
+    3. [Deploy Monitoring Stack](#43-deploy-monitoring-stack)
+5. [CI/CD Pipeline with Jenkins](#5-cicd-pipeline-with-jenkins)
 
-    1. [Setup GCE Instance with Ansible](###5.1.-Setup-GCE-Instance-with-Ansible)
+    1. [Setup GCE Instance with Ansible](#51-setup-gce-instance-with-ansible)
 
-    2. [Install Docker and Jenkins on GCE Instance](###5.2.-Install-Docker-and-Jenkins-on-GCE-Instance)
+    2. [Install Docker and Jenkins on GCE Instance](#52-install-docker-and-jenkins-on-gce-instance)
 
-    3. [Setup Jenkins Pipeline](###5.3.-Setup-Jenkins-Pipeline)
+    3. [Setup Jenkins Pipeline](#53-setup-jenkins-pipeline)
 
-        - [Install Jenkins plugins](####5.3.1-Install-Jenkins-plugins)
+        - [Install Jenkins plugins](#531-install-jenkins-plugins)
 
-        - [Create Github Access Token](####5.3.2-Create-Github-Access-Token)
+        - [Create Github Access Token](#532-create-github-access-token)
 
-        - [Create Docker Hub Access Token](####5.3.3-Create-Docker-Hub-Access-Token)
+        - [Create Docker Hub Access Token](#533-create-docker-hub-access-token)
 
-        - [Create Webhook in Github](####5.3.4-Create-Webhook-in-Github)
+        - [Create Webhook in Github](#534-create-webhook-in-github)
 
-        - [Create Jenkins Pipeline](####5.3.5-Create-Jenkins-Pipeline)
+        - [Create Jenkins Pipeline](#535-create-jenkins-pipeline)
 
-        - [Install Helm on Jenkins to enable CI/CD pipeline](####5.3.6-Install-Helm-on-Jenkins-to-enable-CI/CD-pipeline)
+        - [Install Helm on Jenkins to enable CI/CD pipeline](#536-install-helm-on-jenkins-to-enable-cicd-pipeline)
 
-        - [Create CI/CD Jenkins Pipeline](####5.3.7-Create-CI/CD-Jenkins-Pipeline)
+        - [Create CI/CD Jenkins Pipeline](#537-create-cicd-jenkins-pipeline)
+        
+[Contributing](#contributing)
 
 ## 1. Architecture Overview
-![](assets/Chatbot_based_on_OpenAI_API.drawio.png)
+![](assets/Chatbot_based_on_OpenAIAPI.drawio.png)
 The chatbot infrastructure is designed with a microservices architecture to ensure scalability and maintainability. The system comprises the following major components:
 
 - **Chatbot based on OPEN API**: The custom chatbot service that interacts with the OpenAI API to generate responses to user queries.
@@ -399,3 +401,15 @@ Now, you have successfulle run your CICD pipeline with Jenkins. Let checkout whe
 kubectl get pods -n model-serving
 ```
 You can test our app by typing `chatbot.custom.com` on your web browser.
+
+## Contributing
+
+Thank you for considering contributing to my project! We welcome all kinds of contributions, from bug reports to feature requests and code contributions.
+
+### How to contribute
+
+1. **Fork the repository** - Create a copy of this repository in your GitHub account.
+2. **Clone your fork** - Clone the repository to your local machine.
+```
+git clone https://github.com/your-username/your-repo.git
+```
